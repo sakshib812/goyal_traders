@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="paisaraApp">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Goyal Traders | Become a Partner</title>
+  <meta name="description" content="Share a few details and our team will reply within one working day with the services that fit best.">
+  <!-- Direct contact view -->
+  
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Sticky Site Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html#hero" class="brand-logo" aria-label="GOYAL TRADERS Home">
+        <img src="images/goyal-traders-logo.png" alt="GOYAL TRADERS Logo" class="brand-logo-img" width="40" height="40">
+        <div class="brand-text-wrap">
+          <span class="brand-name">GOYAL TRADERS</span>
+          <span class="brand-tagline">B2B Trading &amp; Distribution</span>
+        </div>
+      </a>
+
+      <nav aria-label="Primary Navigation">
+        <ul class="nav-menu">
+          <li><a href="index.html#hero" class="nav-link">Home</a></li>
+          <li><a href="index.html#services" class="nav-link">Services</a></li>
+          <li><a href="index.html#how-we-work" class="nav-link">How We Work</a></li>
+          <li><a href="contact.html" class="nav-link active" aria-current="page">Contact</a></li>
+          <li>
+            <a href="contact.html" class="btn btn-primary" style="padding: 8px 18px; font-size: 0.9rem;">
+              Talk to us
+              <span class="btn-arrow-icon" aria-hidden="true">&rarr;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section id="contact" class="contact-project-section" aria-labelledby="contact-heading">
+      <div class="container">
+        <div class="contact-section-split">
+          <!-- Left Column: Form with Touch-Only Validation -->
+          <div class="contact-left-col reveal-on-scroll">
+            <span class="contact-eyebrow-text">Get in touch</span>
+            <h1 id="contact-heading" class="contact-h1-title">
+              Tell us about your project
+            </h1>
+            <p class="contact-intro-text">
+              Share a few details and our team will reply within one working day with the services that fit best.
+            </p>
+
+            <div class="contact-form-container" style="max-width: 580px;">
+<!-- ==========================================================================
+     REUSABLE PARTNER FORM CARD (Hero, #contact, and /contact page)
+     ========================================================================== -->
+<div class="fade-in-on-load fade-in-on-load-delay-2" ng-controller="HeroContactController">
+  <div
+    id="hero-contact-card"
+    class="hero-card-outer"
+    ng-mousemove="onCardMouseMove($event)"
+    ng-mouseleave="onCardMouseLeave($event)"
+  >
+    <!-- Anchor for #contact jump target -->
+    <span id="contact" style="position: absolute; top: -110px;" aria-hidden="true"></span>
+
+    <!-- Ambient glowing halo behind card -->
+    <div class="hero-card-glow-halo" aria-hidden="true"></div>
+
+    <!-- The Neumorphic Frosted Card Box -->
+    <div class="hero-contact-card">
+      <!-- SUCCESS STATE -->
+      <div ng-if="isSuccess" class="hero-card-success-panel" role="status" aria-live="polite">
+        <!-- Confetti Burst in Brand Colors (CSS only, ~12 particles) -->
+        <div class="confetti-container" aria-hidden="true">
+          <span class="confetti-particle c1"></span>
+          <span class="confetti-particle c2"></span>
+          <span class="confetti-particle c3"></span>
+          <span class="confetti-particle c4"></span>
+          <span class="confetti-particle c5"></span>
+          <span class="confetti-particle c6"></span>
+          <span class="confetti-particle c7"></span>
+          <span class="confetti-particle c8"></span>
+          <span class="confetti-particle c9"></span>
+          <span class="confetti-particle c10"></span>
+          <span class="confetti-particle c11"></span>
+          <span class="confetti-particle c12"></span>
+        </div>
+
+        <div class="success-icon-wrap" aria-hidden="true">
+          <span class="success-ripple-ring"></span>
+          <svg class="success-check-svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </div>
+
+        <h2 id="success-heading" class="success-title" tabindex="-1">
+          Thank you, {{formData.firstName}}!
+        </h2>
+
+        <p class="success-body">
+          Our team will call you back on <strong>+91 XXXXX XX{{lastThreeDigits}}</strong> within one business day.
+        </p>
+
+        <div class="success-lead-badge">
+          <span>Reference ID: <strong>{{leadId}}</strong></span>
+          <span ng-if="formData.interestedIn">&bull; {{formData.interestedIn}}</span>
+        </div>
+
+        <div class="success-actions">
+          <button
+            type="button"
+            ng-click="resetForm()"
+            class="btn btn-secondary success-secondary-btn"
+          >
+            Submit another enquiry &rarr;
+          </button>
+        </div>
+      </div>
+
+      <!-- FORM STATE -->
+      <div ng-if="!isSuccess">
+        <!-- Card Header with pulsing green dot & title -->
+        <div class="hero-card-badge-row">
+          <span class="hero-card-eyebrow-pill">
+            <span class="hero-card-pulse-dot" aria-hidden="true"></span>
+            GET STARTED FREE
+          </span>
+        </div>
+
+        <h2 class="hero-card-title">Become a Goyal Traders Partner</h2>
+        <p class="hero-card-subtitle">
+          Share your details and our team will call you back to guide you through the next steps.
+        </p>
+
+        <!-- 3-Step Visual Progress Bar -->
+        <div class="form-progress-wrap" aria-label="Form completion progress">
+          <div class="form-progress-track">
+            <div class="form-progress-bar" ng-style="{'width': getProgressPercentage() + '%'}"></div>
+          </div>
+          <div class="form-progress-steps">
+            <span class="progress-step" ng-class="{'is-complete': isStepComplete(1), 'is-active': !isStepComplete(1)}">
+              <span class="step-num">1</span> Your details
+            </span>
+            <span class="progress-step" ng-class="{'is-complete': isStepComplete(2), 'is-active': isStepComplete(1) && !isStepComplete(2)}">
+              <span class="step-num">2</span> Your business
+            </span>
+            <span class="progress-step" ng-class="{'is-complete': isStepComplete(3), 'is-active': isStepComplete(2) && !isStepComplete(3)}">
+              <span class="step-num">3</span> Your interest
+            </span>
+          </div>
+        </div>
+
+        <!-- Inline Error Banner if Submit Fails -->
+        <div ng-if="errorMsg" class="hero-card-error-banner" role="alert">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          <span>{{errorMsg}}</span>
+        </div>
+
+        <!-- Interactive Partner Lead Form -->
+        <form
+          id="hero-contact-card-form"
+          class="hero-card-form"
+          ng-submit="submitCallback($event)"
+          novalidate
+        >
+          <!-- Hidden Honeypot Field for Spam Protection -->
+          <div style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;" aria-hidden="true">
+            <input type="text" name="company_website" ng-model="formData.honeypot" tabindex="-1" autocomplete="off">
+          </div>
+
+          <!-- Fields Grid: 2-column on desktop, 1-column on mobile -->
+          <div class="form-grid-2col">
+            <!-- Row 1: First Name* -->
+            <div
+              class="form-floating-group"
+              ng-class="{'is-focused': isFieldFocused('firstName'), 'has-value': formData.firstName, 'is-valid': isFieldValid('firstName'), 'has-error': fieldErrors.firstName}"
+            >
+              <span class="field-leading-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </span>
+              <input
+                type="text"
+                id="hero-firstname"
+                name="firstName"
+                ng-model="formData.firstName"
+                ng-focus="onFieldFocus('firstName')"
+                ng-blur="onNameBlur('firstName')"
+                class="form-floating-input"
+                autocomplete="given-name"
+                aria-required="true"
+                aria-invalid="{{!!fieldErrors.firstName}}"
+                aria-describedby="hero-firstname-error"
+                required
+              >
+              <label for="hero-firstname" class="form-floating-label">
+                First name <span class="required-star" aria-hidden="true">*</span>
+              </label>
+              <span ng-if="isFieldValid('firstName')" class="field-valid-check" aria-hidden="true">
+                <svg class="check-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </span>
+              <div id="hero-firstname-error" ng-if="fieldErrors.firstName" class="field-error-msg" role="alert">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>{{fieldErrors.firstName}}</span>
+              </div>
+            </div>
+
+            <!-- Row 1: Last Name* -->
+            <div
+              class="form-floating-group"
+              ng-class="{'is-focused': isFieldFocused('lastName'), 'has-value': formData.lastName, 'is-valid': isFieldValid('lastName'), 'has-error': fieldErrors.lastName}"
+            >
+              <span class="field-leading-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </span>
+              <input
+                type="text"
+                id="hero-lastname"
+                name="lastName"
+                ng-model="formData.lastName"
+                ng-focus="onFieldFocus('lastName')"
+                ng-blur="onNameBlur('lastName')"
+                class="form-floating-input"
+                autocomplete="family-name"
+                aria-required="true"
+                aria-invalid="{{!!fieldErrors.lastName}}"
+                aria-describedby="hero-lastname-error"
+                required
+              >
+              <label for="hero-lastname" class="form-floating-label">
+                Last name <span class="required-star" aria-hidden="true">*</span>
+              </label>
+              <span ng-if="isFieldValid('lastName')" class="field-valid-check" aria-hidden="true">
+                <svg class="check-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </span>
+              <div id="hero-lastname-error" ng-if="fieldErrors.lastName" class="field-error-msg" role="alert">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>{{fieldErrors.lastName}}</span>
+              </div>
+            </div>
+
+            <!-- Row 2: Mobile Number* (+91 prefix) -->
+            <div
+              class="form-floating-group"
+              ng-class="{'is-focused': isFieldFocused('mobile'), 'has-value': formData.mobile, 'is-valid': isFieldValid('mobile'), 'has-error': fieldErrors.mobile}"
+            >
+              <span class="field-leading-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </span>
+              <span class="field-phone-prefix" aria-hidden="true">+91</span>
+              <input
+                type="tel"
+                id="hero-mobile"
+                name="mobile"
+                ng-model="formData.mobile"
+                ng-focus="onFieldFocus('mobile')"
+                ng-blur="onFieldBlur('mobile')"
+                ng-change="onMobileChange()"
+                ng-paste="onMobilePaste($event)"
+                class="form-floating-input phone-input"
+                inputmode="numeric"
+                maxlength="10"
+                autocomplete="tel-national"
+                aria-required="true"
+                aria-invalid="{{!!fieldErrors.mobile}}"
+                aria-describedby="hero-mobile-error"
+                required
+              >
+              <label for="hero-mobile" class="form-floating-label phone-label">
+                Mobile number <span class="required-star" aria-hidden="true">*</span>
+              </label>
+              <span ng-if="isFieldValid('mobile')" class="field-valid-check" aria-hidden="true">
+                <svg class="check-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </span>
+              <div id="hero-mobile-error" ng-if="fieldErrors.mobile" class="field-error-msg" role="alert">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>{{fieldErrors.mobile}}</span>
+              </div>
+            </div>
+
+            <!-- Row 2: Email Address (optional) -->
+            <div
+              class="form-floating-group"
+              ng-class="{'is-focused': isFieldFocused('email'), 'has-value': formData.email, 'is-valid': isFieldValid('email'), 'has-error': fieldErrors.email}"
+            >
+              <span class="field-leading-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              </span>
+              <input
+                type="email"
+                id="hero-email"
+                name="email"
+                ng-model="formData.email"
+                ng-focus="onFieldFocus('email')"
+                ng-blur="onFieldBlur('email')"
+                class="form-floating-input"
+                autocomplete="email"
+                aria-invalid="{{!!fieldErrors.email}}"
+                aria-describedby="hero-email-error"
+              >
+              <label for="hero-email" class="form-floating-label">Email address</label>
+              <span ng-if="isFieldValid('email')" class="field-valid-check" aria-hidden="true">
+                <svg class="check-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </span>
+              <div id="hero-email-error" ng-if="fieldErrors.email" class="field-error-msg" role="alert">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>{{fieldErrors.email}}</span>
+              </div>
+            </div>
+
+            <!-- Row 3: Shop / Business Name (optional) -->
+            <div
+              class="form-floating-group"
+              ng-class="{'is-focused': isFieldFocused('businessName'), 'has-value': formData.businessName, 'has-error': fieldErrors.businessName}"
+            >
+              <span class="field-leading-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2v0a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12v0a2 2 0 0 1-2-2V7"/></svg>
+              </span>
+              <input
+                type="text"
+                id="hero-businessname"
+                name="businessName"
+                ng-model="formData.businessName"
+                ng-focus="onFieldFocus('businessName')"
+                ng-blur="onFieldBlur('businessName')"
+                class="form-floating-input"
+                maxlength="80"
+                autocomplete="organization"
+                aria-invalid="{{!!fieldErrors.businessName}}"
+                aria-describedby="hero-businessname-error"
+              >
+              <label for="hero-businessname" class="form-floating-label">Shop / Business name</label>
+              <div id="hero-businessname-error" ng-if="fieldErrors.businessName" class="field-error-msg" role="alert">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>{{fieldErrors.businessName}}</span>
+              </div>
+            </div>
+
+            <!-- Row 3: City (optional) -->
+            <div
+              class="form-floating-group"
+              ng-class="{'is-focused': isFieldFocused('city'), 'has-value': formData.city, 'has-error': fieldErrors.city}"
+            >
+              <span class="field-leading-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+              </span>
+              <input
+                type="text"
+                id="hero-city"
+                name="city"
+                ng-model="formData.city"
+                ng-focus="onFieldFocus('city')"
+                ng-blur="onFieldBlur('city')"
+                class="form-floating-input"
+                maxlength="40"
+                autocomplete="address-level2"
+                aria-invalid="{{!!fieldErrors.city}}"
+                aria-describedby="hero-city-error"
+              >
+              <label for="hero-city" class="form-floating-label">City</label>
+              <div id="hero-city-error" ng-if="fieldErrors.city" class="field-error-msg" role="alert">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>{{fieldErrors.city}}</span>
+              </div>
+            </div>
+
+            <!-- Row 4: PIN code (optional, 6 digits) -->
+            <div
+              class="form-floating-group"
+              ng-class="{'is-focused': isFieldFocused('pin'), 'has-value': formData.pin, 'is-valid': isFieldValid('pin'), 'has-error': fieldErrors.pin}"
+            >
+              <span class="field-leading-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x1="9" x2="20" y2="9"/><line x1="4" x1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg>
+              </span>
+              <input
+                type="text"
+                id="hero-pin"
+                name="pin"
+                ng-model="formData.pin"
+                ng-focus="onFieldFocus('pin')"
+                ng-blur="onFieldBlur('pin')"
+                class="form-floating-input"
+                maxlength="6"
+                inputmode="numeric"
+                autocomplete="postal-code"
+                aria-invalid="{{!!fieldErrors.pin}}"
+                aria-describedby="hero-pin-error"
+              >
+              <label for="hero-pin" class="form-floating-label">PIN code</label>
+              <span ng-if="isFieldValid('pin')" class="field-valid-check" aria-hidden="true">
+                <svg class="check-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </span>
+              <div id="hero-pin-error" ng-if="fieldErrors.pin" class="field-error-msg" role="alert">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>{{fieldErrors.pin}}</span>
+              </div>
+            </div>
+
+            <!-- Row 4: I'm interested in* (dropdown) -->
+            <div
+              class="form-floating-group"
+              ng-class="{'is-focused': isFieldFocused('interestedIn'), 'has-value': formData.interestedIn, 'has-error': fieldErrors.interestedIn}"
+            >
+              <span class="field-leading-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>
+              </span>
+              <select
+                id="hero-interested"
+                name="interestedIn"
+                ng-model="formData.interestedIn"
+                ng-focus="onFieldFocus('interestedIn')"
+                ng-blur="onFieldBlur('interestedIn')"
+                ng-change="saveDraft()"
+                class="form-floating-select"
+                aria-required="true"
+                aria-invalid="{{!!fieldErrors.interestedIn}}"
+                aria-describedby="hero-interested-error"
+                required
+              >
+                <option ng-repeat="opt in options" value="{{opt}}">{{opt}}</option>
+              </select>
+              <label for="hero-interested" class="form-floating-label select-label">
+                I'm interested in <span class="required-star" aria-hidden="true">*</span>
+              </label>
+              <span class="select-dropdown-arrow" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </span>
+              <div id="hero-interested-error" ng-if="fieldErrors.interestedIn" class="field-error-msg" role="alert">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>{{fieldErrors.interestedIn}}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Consent Checkbox (required) -->
+          <div class="form-consent-wrap" ng-class="{'has-consent-error': fieldErrors.consent}">
+            <label class="form-consent-label">
+              <input
+                type="checkbox"
+                id="hero-consent"
+                name="consent"
+                ng-model="formData.consent"
+                ng-change="validateSingleField('consent')"
+                class="form-consent-checkbox"
+                required
+                aria-required="true"
+                aria-invalid="{{!!fieldErrors.consent}}"
+                aria-describedby="hero-consent-error"
+              >
+              <span class="custom-checkbox-box" aria-hidden="true">
+                <svg class="check-mark-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </span>
+              <span class="consent-text">
+                I agree to be contacted by Goyal Traders by phone, WhatsApp or email about my enquiry.
+              </span>
+            </label>
+            <div id="hero-consent-error" ng-if="fieldErrors.consent" class="field-error-msg consent-error-text" role="alert">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span>{{fieldErrors.consent}}</span>
+            </div>
+          </div>
+
+          <!-- Submit Button: Get a free callback -->
+          <button
+            type="submit"
+            id="hero-submit-btn"
+            class="hero-card-submit-btn"
+            ng-disabled="isSubmitting"
+          >
+            <span ng-if="!isSubmitting">Get a free callback</span>
+            <span ng-if="isSubmitting">Sending request...</span>
+            <svg ng-if="!isSubmitting" class="btn-arrow-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+            <span ng-if="isSubmitting" class="btn-spinner" aria-hidden="true"></span>
+          </button>
+
+          <!-- Small Trust Line under button with Lock Icon -->
+          <div class="hero-card-lock-note">
+            <span class="lock-icon" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </span>
+            <span>We'll never share your details. No sign-up charges.</span>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Trust row under card on desktop (3 tiny items with icons) -->
+    <div class="card-trust-row" aria-label="Service guarantees">
+      <div class="card-trust-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span>Free callback</span>
+      </div>
+      <div class="card-trust-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Quick onboarding support</span>
+      </div>
+      <div class="card-trust-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span>Your data stays private</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Full-Width Navy Footer (#0A1330) -->
+  <footer class="site-footer-navy">
+    <div class="container">
+      <div class="footer-columns-grid">
+        <!-- Col 1: Brand & Blurb -->
+        <div class="footer-col footer-col-brand">
+          <a href="index.html#hero" class="footer-brand-logo" aria-label="GOYAL TRADERS Home">
+            <img src="images/goyal-traders-logo.png" alt="GOYAL TRADERS Logo" class="footer-brand-logo-img" width="42" height="42">
+            <div class="footer-brand-text-wrap">
+              <span class="footer-brand-name">GOYAL TRADERS</span>
+              <span class="footer-brand-tagline">B2B Trading &amp; Distribution</span>
+            </div>
+          </a>
+          <p class="footer-brand-blurb">
+            Goyal Traders helps businesses add payments and everyday services to their products through one connection. Choose what you need and switch on more later.
+          </p>
+          <a href="contact.html" class="footer-talk-link">
+            Talk to us <span class="footer-talk-arrow" aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+
+        <!-- Col 2: Company -->
+        <div class="footer-col">
+          <h3 class="footer-col-title">Company</h3>
+          <ul class="footer-links-list">
+            <li><a href="index.html#about" class="footer-nav-link"><span class="footer-chevron" aria-hidden="true">&rsaquo;</span>About Us</a></li>
+            <li><a href="privacy-policy.html" class="footer-nav-link"><span class="footer-chevron" aria-hidden="true">&rsaquo;</span>Privacy Policy</a></li>
+            <li><a href="contact.html" class="footer-nav-link"><span class="footer-chevron" aria-hidden="true">&rsaquo;</span>Contact Us</a></li>
+            <li><a href="terms-and-conditions.html" class="footer-nav-link"><span class="footer-chevron" aria-hidden="true">&rsaquo;</span>Terms &amp; Conditions</a></li>
+            <li><a href="refund-policy.html" class="footer-nav-link"><span class="footer-chevron" aria-hidden="true">&rsaquo;</span>Refund Policy</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Services -->
+        <div class="footer-col">
+          <h3 class="footer-col-title">Services</h3>
+          <ul class="footer-links-list footer-services-list">
+            <li><a href="index.html#service-01" class="footer-nav-link"><span class="footer-chevron" aria-hidden="true">&rsaquo;</span>Mobile Recharge API</a></li>
+            <li><a href="index.html#service-02" class="footer-nav-link"><span class="footer-chevron" aria-hidden="true">&rsaquo;</span>DTH Recharge</a></li>
+            <li><a href="index.html#service-03" class="footer-nav-link"><span class="footer-chevron" aria-hidden="true">&rsaquo;</span>Electricity &amp; Bill Payments</a></li>
+            <li><a href="index.html#service-04" class="footer-nav-link"><span class="footer-chevron" aria-hidden="true">&rsaquo;</span>Utility &amp; Fee Payments</a></li>
+            <li><a href="index.html#service-05" class="footer-nav-link"><span class="footer-chevron" aria-hidden="true">&rsaquo;</span>Insurance Distribution</a></li>
+            <li><a href="index.html#service-06" class="footer-nav-link"><span class="footer-chevron" aria-hidden="true">&rsaquo;</span>Dedicated Partner Support</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Contact -->
+        <div class="footer-col">
+          <h3 class="footer-col-title">Contact</h3>
+          <div class="footer-office-cards">
+            <div class="footer-office-card">
+              <span class="office-card-label">HEAD OFFICE</span>
+              <span class="office-card-address">Level 4, Prestige Tech Park, Outer Ring Road, Kadubeesanahalli, Bengaluru, Karnataka 560103</span>
+            </div>
+            <div class="footer-office-card">
+              <span class="office-card-label">REGISTERED OFFICE</span>
+              <span class="office-card-address">Unit 602, Cyber One, Sector 30, Vashi, Navi Mumbai, Maharashtra 400703</span>
+            </div>
+          </div>
+          <div class="footer-direct-contacts">
+            <a href="mailto:hello@paisara.example" class="footer-contact-line">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+                <path d="M22 6l-10 7L2 6" />
+              </svg>
+              <span>hello@paisara.example</span>
+            </a>
+            <a href="tel:+910000000000" class="footer-contact-line">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              <span>+91 00000 00000</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Copyright Bar -->
+    <div class="footer-bottom-bar">
+      <div class="container">
+        <p class="footer-copyright-text">
+          &copy; 2026 Goyal Traders Technologies Pvt. Ltd. All rights reserved.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating Back to Top Button -->
+  <button type="button" class="back-to-top-btn" aria-label="Back to top">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="18 15 12 9 6 15" />
+    </svg>
+  </button>
+
+  <script src="js/main.js"></script>
+  <script src="js/vendor/angular.min.js"></script>
+  <script src="js/vendor/angular-route.min.js"></script>
+  <script src="js/partnerForm.js"></script>
+  <script src="js/siteContent.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
