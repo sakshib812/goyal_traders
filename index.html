@@ -192,8 +192,7 @@
   <!-- Main View Container (AngularJS ng-view SPA) -->
   <main id="main-content" ng-view autoscroll="false"></main>
 
-  <!-- Global Footer (Exact structure & classes from Next.js Footer.tsx) -->
-    <!-- Global Footer -->
+  <!-- Global Footer -->
   <footer class="site-footer-navy" ng-controller="FooterController">
     <div class="container">
       <div class="footer-columns-grid">
@@ -1177,6 +1176,61 @@
           <span class="bill-tile-label">Wallet Top-up</span>
         </li>
         </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     STATS SECTION (Platform Scale & Achievements)
+     ========================================================================== -->
+<section
+  id="stats"
+  class="stats-band-section"
+  aria-label="Platform scale and statistics"
+  ng-controller="StatsController"
+>
+  <div class="container">
+    <div class="stats-grid">
+      <div
+        ng-repeat="stat in stats"
+        class="stat-card"
+        ng-class="{'is-visible': hasAnimated}"
+        ng-style="{'transition-delay': ($index * 80) + 'ms'}"
+      >
+        <div class="stat-icon-tile">
+          <!-- partner icon -->
+          <svg ng-if="stat.iconName === 'partner'" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          <!-- transaction icon -->
+          <svg ng-if="stat.iconName === 'transaction'" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+          </svg>
+          <!-- service icon -->
+          <svg ng-if="stat.iconName === 'service'" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1.5" />
+            <rect x="14" y="3" width="7" height="7" rx="1.5" />
+            <rect x="14" y="14" width="7" height="7" rx="1.5" />
+            <rect x="3" y="14" width="7" height="7" rx="1.5" />
+          </svg>
+          <!-- state icon -->
+          <svg ng-if="stat.iconName === 'state'" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z" />
+            <circle cx="12" cy="10" r="2.5" />
+          </svg>
+        </div>
+        <div class="stat-number-wrap">
+          <span class="stat-number">
+            {{stat.displayValue}}
+            <span class="stat-suffix">{{stat.suffix}}</span>
+          </span>
+        </div>
+        <h3 class="stat-label">{{stat.label}}</h3>
+        <p class="stat-desc">{{stat.description}}</p>
       </div>
     </div>
   </div>

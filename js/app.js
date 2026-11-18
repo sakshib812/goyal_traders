@@ -677,16 +677,26 @@
   // Stats Counter Controller
   app.controller('StatsController', ['$scope', '$window', '$timeout', function ($scope, $window, $timeout) {
     $scope.stats = [
-      { id: 1, target: 85, displayValue: '0', suffix: '+', label: 'Partner businesses' },
-      { id: 2, target: 450, displayValue: '0', suffix: 'K+', label: 'Transactions processed' },
-      { id: 3, target: 6, displayValue: '0', suffix: '', label: 'Services available' },
-      { id: 4, target: 18, displayValue: '0', suffix: '+', label: 'States covered' }
+      { id: 'partners', target: 240, displayValue: '0', suffix: '+', label: 'Partner businesses', description: 'Active digital platforms and retail networks', iconName: 'partner' },
+      { id: 'transactions', target: 650, displayValue: '0', suffix: 'K+', label: 'Transactions processed', description: 'Monthly utility, recharge and bill requests', iconName: 'transaction' },
+      { id: 'services', target: 9, displayValue: '0', suffix: '', label: 'Services available', description: 'Modular fintech APIs ready for immediate integration', iconName: 'service' },
+      { id: 'states', target: 18, displayValue: '0', suffix: '+', label: 'States covered', description: 'Regional operator and banking correspondent reach', iconName: 'state' }
     ];
 
     var counted = false;
+    $scope.hasAnimated = false;
     function animateCounters() {
       if (counted) return;
       counted = true;
+      $scope.hasAnimated = true;
+
+      if ($window.matchMedia && $window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        $scope.stats.forEach(function (stat) {
+          stat.displayValue = stat.target.toString();
+        });
+        $scope.$applyAsync();
+        return;
+      }
 
       $scope.stats.forEach(function (stat) {
         var duration = 1200;
@@ -720,6 +730,9 @@
         var obs = new IntersectionObserver(function (entries) {
           entries.forEach(function (entry) {
             if (entry.isIntersecting) {
+              $scope.$applyAsync(function () {
+                $scope.hasAnimated = true;
+              });
               animateCounters();
               obs.unobserve(entry.target);
             }
