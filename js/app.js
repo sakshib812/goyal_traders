@@ -1024,8 +1024,8 @@
 
   // FAQ Controller
   app.controller('FaqController', ['$scope', function ($scope) {
-    // FAQ Accordion: One open at a time
-    $scope.openIndex = 0; // First question open by default
+    // FAQ Accordion: All questions closed by default on page load
+    $scope.openIndex = -1;
 
     $scope.toggleFaq = function (index) {
       if ($scope.openIndex === index) {
