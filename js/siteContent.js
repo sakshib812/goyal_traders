@@ -442,7 +442,99 @@
                   "enabled": false
             }
       ]
-},
+    },
+
+    // Floating Statistics Panel Configuration
+    stats: {
+      items: [
+        {
+          id: "core-services",
+          enabled: true,
+          icon: "layers",
+          number: 6,
+          suffix: "",
+          label: "Core services",
+          text: "Recharge, DTH, bills, utilities, insurance and partner support."
+        },
+        {
+          id: "bill-types",
+          enabled: true,
+          icon: "receipt",
+          number: 20, // Kept in sync with billPayments.tiles.length
+          suffix: "+",
+          label: "Bill & recharge types",
+          text: "Electricity, water, gas, telecom, FASTag, fees and more."
+        },
+        {
+          id: "partner-roles",
+          enabled: true,
+          icon: "network",
+          number: 4,
+          suffix: "",
+          label: "Partner roles",
+          text: "Whitelabel, master distributor, distributor and retailer."
+        },
+        {
+          id: "wallet",
+          enabled: true,
+          icon: "wallet",
+          number: 1,
+          suffix: "",
+          label: "Wallet",
+          text: "A single balance to serve every service."
+        },
+        // Optional items, disabled by default until verified figures are confirmed [CONFIRM]
+        {
+          id: "partners-onboarded",
+          enabled: false,
+          icon: "users",
+          number: 0,
+          suffix: "+",
+          label: "Partners onboarded",
+          text: "Active retail and distribution network. [CONFIRM: verified partner count]",
+          confirmRequired: true
+        },
+        {
+          id: "transactions-processed",
+          enabled: false,
+          icon: "activity",
+          number: 0,
+          suffix: "K+",
+          label: "Transactions processed",
+          text: "Monthly utility, recharge and bill requests. [CONFIRM: verified transaction volume]",
+          confirmRequired: true
+        },
+        {
+          id: "states-covered",
+          enabled: false,
+          icon: "map-pin",
+          number: 0,
+          suffix: "+",
+          label: "States covered",
+          text: "Regional distribution reach. [CONFIRM: verified list of states]",
+          confirmRequired: true
+        },
+        {
+          id: "years-in-business",
+          enabled: false,
+          icon: "calendar",
+          number: 0,
+          suffix: "+",
+          label: "Years in business",
+          text: "Serving businesses and retail partners. [CONFIRM: year of establishment]",
+          confirmRequired: true
+        },
+        {
+          id: "support-availability",
+          enabled: false,
+          icon: "clock",
+          text: "Mon-Sat, 10 AM - 6 PM",
+          label: "Support availability",
+          description: "Dedicated support desk for partners. [CONFIRM: exact operating hours]",
+          confirmRequired: true
+        }
+      ]
+    },
     partnerTicker: {
       row1: {
         label: "WHO CAN PARTNER WITH US",

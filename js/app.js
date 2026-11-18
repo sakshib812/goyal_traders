@@ -674,75 +674,153 @@
     $controller('ServicesGridController', { $scope: $scope });
   }]);
 
-  // Stats Counter Controller
+  // Floating Stats Panel Controller
   app.controller('StatsController', ['$scope', '$window', '$timeout', function ($scope, $window, $timeout) {
-    $scope.stats = [
-      { id: 'partners', target: 240, displayValue: '0', suffix: '+', label: 'Partner businesses', description: 'Active digital platforms and retail networks', iconName: 'partner' },
-      { id: 'transactions', target: 650, displayValue: '0', suffix: 'K+', label: 'Transactions processed', description: 'Monthly utility, recharge and bill requests', iconName: 'transaction' },
-      { id: 'services', target: 9, displayValue: '0', suffix: '', label: 'Services available', description: 'Modular fintech APIs ready for immediate integration', iconName: 'service' },
-      { id: 'states', target: 18, displayValue: '0', suffix: '+', label: 'States covered', description: 'Regional operator and banking correspondent reach', iconName: 'state' }
-    ];
+    // 1. Load config from SITE_CONTENT
+    var contentSource = (window.SITE_CONTENT && window.SITE_CONTENT.stats && window.SITE_CONTENT.stats.items)
+      ? window.SITE_CONTENT.stats.items
+      : [
+          { id: 'core-services', enabled: true, icon: 'layers', number: 6, suffix: '', label: 'Core services', text: 'Recharge, DTH, bills, utilities, insurance and partner support.' },
+          { id: 'bill-types', enabled: true, icon: 'receipt', number: 20, suffix: '+', label: 'Bill & recharge types', text: 'Electricity, water, gas, telecom, FASTag, fees and more.' },
+          { id: 'partner-roles', enabled: true, icon: 'network', number: 4, suffix: '', label: 'Partner roles', text: 'Whitelabel, master distributor, distributor and retailer.' },
+          { id: 'wallet', enabled: true, icon: 'wallet', number: 1, suffix: '', label: 'Wallet', text: 'A single balance to serve every service.' }
+        ];
 
-    var counted = false;
+    // Deep clone items so controller state does not mutate shared config
+    var rawItems = JSON.parse(JSON.stringify(contentSource));
+
+    // 2. Keep item 2's "20+" in sync with the number of enabled tiles in Bill categories section
+    if (window.SITE_CONTENT && window.SITE_CONTENT.billPayments && window.SITE_CONTENT.billPayments.tiles) {
+      var enabledBillTilesCount = window.SITE_CONTENT.billPayments.tiles.length;
+      var billStat = rawItems.find(function (it) { return it.id === 'bill-types'; });
+      if (billStat && enabledBillTilesCount > 0) {
+        billStat.number = enabledBillTilesCount;
+      }
+    }
+
+    // 3. Render ONLY items with enabled: true
+    $scope.stats = rawItems.filter(function (item) {
+      return item.enabled === true;
+    });
+
+    // Initial values
+    $scope.stats.forEach(function (stat) {
+      var finalValText = (typeof stat.number === 'number')
+        ? stat.number.toLocaleString('en-IN') + (stat.suffix || '')
+        : (stat.text || '');
+      stat.finalAriaText = finalValText + ' ' + stat.label + '. ' + stat.text;
+      stat.displayValue = (typeof stat.number === 'number') ? '0' : (stat.text || '');
+    });
+
+    $scope.isInView = false;
     $scope.hasAnimated = false;
-    function animateCounters() {
-      if (counted) return;
-      counted = true;
-      $scope.hasAnimated = true;
 
-      if ($window.matchMedia && $window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var prefersReducedMotion = $window.matchMedia && $window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function triggerAnimations() {
+      if ($scope.hasAnimated) return;
+      $scope.hasAnimated = true;
+      $scope.isInView = true;
+
+      // prefers-reduced-motion: show final values immediately, no count-up
+      if (prefersReducedMotion) {
         $scope.stats.forEach(function (stat) {
-          stat.displayValue = stat.target.toString();
+          if (typeof stat.number === 'number') {
+            stat.displayValue = stat.number.toLocaleString('en-IN');
+          } else {
+            stat.displayValue = stat.text || '';
+          }
         });
         $scope.$applyAsync();
         return;
       }
 
-      $scope.stats.forEach(function (stat) {
-        var duration = 1200;
-        var start = 0;
-        var end = stat.target;
-        var startTime = null;
-
-        function step(timestamp) {
-          if (!startTime) startTime = timestamp;
-          var progress = Math.min((timestamp - startTime) / duration, 1);
-          var easeOut = 1 - Math.pow(1 - progress, 3);
-          var current = Math.floor(easeOut * end);
-          $scope.$applyAsync(function () {
-            stat.displayValue = current.toString();
-          });
-          if (progress < 1) {
-            $window.requestAnimationFrame(step);
-          } else {
-            $scope.$applyAsync(function () {
-              stat.displayValue = end.toString();
-            });
-          }
+      // Count-up animation for numeric stats: 1400ms duration, ease-out-cubic, 120ms stagger
+      $scope.stats.forEach(function (stat, index) {
+        if (typeof stat.number !== 'number') {
+          stat.displayValue = stat.text || '';
+          return;
         }
-        $window.requestAnimationFrame(step);
+
+        var target = stat.number;
+        var duration = 1400;
+        var staggerDelay = index * 120;
+
+        $timeout(function () {
+          var startTime = null;
+          function step(timestamp) {
+            if (!startTime) startTime = timestamp;
+            var elapsed = timestamp - startTime;
+            var progress = Math.min(elapsed / duration, 1);
+            // Ease-out cubic: 1 - (1 - t)^3
+            var easeOut = 1 - Math.pow(1 - progress, 3);
+            var current = Math.floor(easeOut * target);
+
+            $scope.$applyAsync(function () {
+              stat.displayValue = current.toLocaleString('en-IN');
+            });
+
+            if (progress < 1) {
+              $window.requestAnimationFrame(step);
+            } else {
+              $scope.$applyAsync(function () {
+                stat.displayValue = target.toLocaleString('en-IN');
+              });
+            }
+          }
+          $window.requestAnimationFrame(step);
+        }, staggerDelay);
       });
     }
 
     $timeout(function () {
-      var statsEl = document.getElementById('stats');
-      if (statsEl && 'IntersectionObserver' in $window) {
-        var obs = new IntersectionObserver(function (entries) {
+      var sectionEl = document.getElementById('stats');
+      if (!sectionEl) return;
+
+      if (prefersReducedMotion) {
+        triggerAnimations();
+        return;
+      }
+
+      if ('IntersectionObserver' in $window) {
+        // Entrance observer: threshold 0.3, play once
+        var entranceObserver = new IntersectionObserver(function (entries) {
           entries.forEach(function (entry) {
             if (entry.isIntersecting) {
               $scope.$applyAsync(function () {
-                $scope.hasAnimated = true;
+                $scope.isInView = true;
               });
-              animateCounters();
-              obs.unobserve(entry.target);
+              triggerAnimations();
+              entranceObserver.unobserve(entry.target);
             }
           });
-        }, { threshold: 0.2 });
-        obs.observe(statsEl);
+        }, { threshold: 0.3 });
+        entranceObserver.observe(sectionEl);
+
+        // Idle animation pause observer (pause off-screen)
+        var idleObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              sectionEl.classList.remove('idle-paused');
+            } else {
+              sectionEl.classList.add('idle-paused');
+            }
+          });
+        }, { threshold: 0.05 });
+        idleObserver.observe(sectionEl);
+
+        // Pause idle animations when browser tab is hidden
+        document.addEventListener('visibilitychange', function () {
+          if (document.hidden) {
+            sectionEl.classList.add('idle-paused');
+          } else if ($scope.isInView) {
+            sectionEl.classList.remove('idle-paused');
+          }
+        });
       } else {
-        animateCounters();
+        triggerAnimations();
       }
-    }, 200);
+    }, 150);
   }]);
 
   // Footer Controller

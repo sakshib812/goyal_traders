@@ -831,56 +831,123 @@
 </section>
 
 <!-- ==========================================================================
-     STATS SECTION (Platform Scale & Achievements)
+     STATISTICS PANEL SECTION (Floating Neumorphic Brand-Red Panel)
      ========================================================================== -->
 <section
   id="stats"
-  class="stats-band-section"
-  aria-label="Platform scale and statistics"
+  class="stat-panel-section"
+  aria-label="Goyal Traders at a glance"
   ng-controller="StatsController"
+  ng-class="{'is-in-view': isInView}"
 >
   <div class="container">
-    <div class="stats-grid">
-      <div
-        ng-repeat="stat in stats"
-        class="stat-card"
-        ng-class="{'is-visible': hasAnimated}"
-        ng-style="{'transition-delay': ($index * 80) + 'ms'}"
-      >
-        <div class="stat-icon-tile">
-          <!-- partner icon -->
-          <svg ng-if="stat.iconName === 'partner'" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-          </svg>
-          <!-- transaction icon -->
-          <svg ng-if="stat.iconName === 'transaction'" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-          </svg>
-          <!-- service icon -->
-          <svg ng-if="stat.iconName === 'service'" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="3" y="3" width="7" height="7" rx="1.5" />
-            <rect x="14" y="3" width="7" height="7" rx="1.5" />
-            <rect x="14" y="14" width="7" height="7" rx="1.5" />
-            <rect x="3" y="14" width="7" height="7" rx="1.5" />
-          </svg>
-          <!-- state icon -->
-          <svg ng-if="stat.iconName === 'state'" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z" />
-            <circle cx="12" cy="10" r="2.5" />
-          </svg>
+    <div class="stat-panel">
+      <!-- 3px top accent line in brand gradient (draws from center outwards) -->
+      <div class="stat-top-accent" aria-hidden="true"></div>
+
+      <!-- Faint dotted pattern background -->
+      <div class="stat-dots-pattern" aria-hidden="true"></div>
+
+      <!-- Idle slow shine streak -->
+      <div class="stat-panel-shine" aria-hidden="true"></div>
+
+      <!-- Faint circular 'T' ring watermark from logo -->
+      <svg class="stat-watermark" viewBox="0 0 200 200" aria-hidden="true">
+        <circle cx="100" cy="100" r="85" fill="none" stroke="currentColor" stroke-width="4" stroke-dasharray="6 6"/>
+        <circle cx="100" cy="100" r="68" fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="100" cy="100" r="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3"/>
+        <path d="M74 76h52M100 76v52" stroke="currentColor" stroke-width="9" stroke-linecap="round"/>
+      </svg>
+
+      <!-- Semantic DL list for Stats -->
+      <dl class="stat-grid" ng-class="'stat-cols-' + stats.length">
+        <div
+          ng-repeat="stat in stats track by stat.id"
+          class="stat-cell"
+          ng-style="{'--cell-delay': ($index * 120) + 'ms'}"
+        >
+          <!-- 44px circular icon badge with thin SVG ring -->
+          <div class="stat-badge-wrap">
+            <div class="stat-icon-badge">
+              <svg class="stat-ring-svg" viewBox="0 0 44 44" aria-hidden="true">
+                <circle class="stat-ring-circle" cx="22" cy="22" r="20" fill="none"/>
+              </svg>
+              <!-- layers icon -->
+              <svg ng-if="stat.icon === 'layers'" class="lucide-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/>
+                <path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/>
+                <path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/>
+              </svg>
+              <!-- receipt icon -->
+              <svg ng-if="stat.icon === 'receipt'" class="lucide-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/>
+                <path d="M16 8h-8"/>
+                <path d="M16 12h-8"/>
+                <path d="M16 16h-8"/>
+              </svg>
+              <!-- network icon -->
+              <svg ng-if="stat.icon === 'network'" class="lucide-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="16" y="16" width="6" height="6" rx="1"/>
+                <rect x="2" y="16" width="6" height="6" rx="1"/>
+                <rect x="9" y="2" width="6" height="6" rx="1"/>
+                <path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/>
+                <path d="M12 12V8"/>
+              </svg>
+              <!-- wallet icon -->
+              <svg ng-if="stat.icon === 'wallet'" class="lucide-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/>
+                <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>
+              </svg>
+              <!-- users icon (optional) -->
+              <svg ng-if="stat.icon === 'users'" class="lucide-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              <!-- activity icon (optional) -->
+              <svg ng-if="stat.icon === 'activity'" class="lucide-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              </svg>
+              <!-- map-pin icon (optional) -->
+              <svg ng-if="stat.icon === 'map-pin'" class="lucide-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
+                <circle cx="12" cy="10" r="2.5"/>
+              </svg>
+              <!-- calendar icon (optional) -->
+              <svg ng-if="stat.icon === 'calendar'" class="lucide-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              <!-- clock icon (optional) -->
+              <svg ng-if="stat.icon === 'clock'" class="lucide-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Number with text gradient -->
+          <dd class="stat-metric-wrap">
+            <span class="sr-only">{{stat.finalAriaText}}</span>
+            <span class="stat-number-display" aria-hidden="true">
+              <span class="stat-number">{{stat.displayValue}}</span>
+              <span ng-if="stat.suffix" class="stat-suffix">{{stat.suffix}}</span>
+            </span>
+          </dd>
+
+          <!-- Label -->
+          <dt class="stat-label">{{stat.label}}</dt>
+
+          <!-- Description -->
+          <dd class="stat-desc">{{stat.text}}</dd>
+
+          <!-- Vertical divider between cells -->
+          <div ng-if="!$last" class="stat-divider" aria-hidden="true"></div>
         </div>
-        <div class="stat-number-wrap">
-          <span class="stat-number">
-            {{stat.displayValue}}
-            <span class="stat-suffix">{{stat.suffix}}</span>
-          </span>
-        </div>
-        <h3 class="stat-label">{{stat.label}}</h3>
-        <p class="stat-desc">{{stat.description}}</p>
-      </div>
+      </dl>
     </div>
   </div>
 </section>
