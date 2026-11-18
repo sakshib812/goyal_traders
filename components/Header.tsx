@@ -9,7 +9,7 @@ export default function Header() {
   const isSubPage = pathname !== '/' && pathname !== '';
   const isContactPage = pathname === '/contact' || pathname === '/contact/';
   const [isScrolled, setIsScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState<'hero' | 'services' | 'how-we-work'>('hero');
+  const [activeSection, setActiveSection] = useState<string>('hero');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,7 +39,7 @@ export default function Header() {
 
   const handleNavClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
-    targetId: 'hero' | 'services' | 'how-we-work' | 'hero-contact-card'
+    targetId: string
   ) => {
     if (!isSubPage) {
       const el = document.getElementById(targetId);
@@ -50,7 +50,7 @@ export default function Header() {
         if (targetId === 'hero-contact-card') {
           const input = el.querySelector('input') as HTMLInputElement | null;
           input?.focus();
-        } else if (targetId !== 'hero-contact-card') {
+        } else {
           setActiveSection(targetId);
         }
       }

@@ -112,16 +112,24 @@ export default function ServiceOrbit() {
   const sparklesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const container = containerRef.current;
     if (!container) return;
 
-    const prefersReducedMotion =
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // IntersectionObserver for entrance and off-screen pause
-    if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
-      const observer = new IntersectionObserver(
+    let observer: IntersectionObserver | null = null;
+    const handleVisibility = () => {
+      if (document.visibilityState === 'hidden') {
+        container.classList.add('orbit-is-paused');
+      } else {
+        container.classList.remove('orbit-is-paused');
+      }
+    };
+
+    if ('IntersectionObserver' in window) {
+      observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
@@ -135,103 +143,100 @@ export default function ServiceOrbit() {
         { threshold: 0.1 }
       );
       observer.observe(container);
-
-      const handleVisibility = () => {
-        if (document.visibilityState === 'hidden') {
-          container.classList.add('orbit-is-paused');
-        } else {
-          container.classList.remove('orbit-is-paused');
-        }
-      };
       document.addEventListener('visibilitychange', handleVisibility);
-
-      return () => {
-        observer.disconnect();
-        document.removeEventListener('visibilitychange', handleVisibility);
-      };
     } else {
       container.classList.add('is-in-view');
     }
 
     // Desktop Mouse Parallax
-    if (prefersReducedMotion || typeof window === 'undefined') return;
     const isHoverCapable = window.matchMedia('(hover: hover)').matches;
-    if (!isHoverCapable || window.innerWidth < 1024) return;
+    let onMouseMove: ((e: MouseEvent) => void) | null = null;
+    let onMouseLeave: (() => void) | null = null;
 
-    let mouseX = 0, mouseY = 0;
-    let currentHubX = 0, currentHubY = 0;
-    let currentInnerX = 0, currentInnerY = 0;
-    let currentOuterX = 0, currentOuterY = 0;
-    let currentSparkleX = 0, currentSparkleY = 0;
-    let isTicking = false;
+    if (!prefersReducedMotion && isHoverCapable && window.innerWidth >= 1024) {
+      let mouseX = 0, mouseY = 0;
+      let currentHubX = 0, currentHubY = 0;
+      let currentInnerX = 0, currentInnerY = 0;
+      let currentOuterX = 0, currentOuterY = 0;
+      let currentSparkleX = 0, currentSparkleY = 0;
+      let isTicking = false;
 
-    const onMouseMove = (e: MouseEvent) => {
-      const rect = container.getBoundingClientRect();
-      const cX = rect.left + rect.width / 2;
-      const cY = rect.top + rect.height / 2;
-      mouseX = Math.max(-1, Math.min(1, (e.clientX - cX) / (rect.width / 2)));
-      mouseY = Math.max(-1, Math.min(1, (e.clientY - cY) / (rect.height / 2)));
+      const updateParallax = () => {
+        const lerp = 0.08;
 
-      if (!isTicking) {
-        isTicking = true;
-        requestAnimationFrame(updateParallax);
-      }
-    };
+        const targetHubX = mouseX * 4;
+        const targetHubY = mouseY * 4;
+        currentHubX += (targetHubX - currentHubX) * lerp;
+        currentHubY += (targetHubY - currentHubY) * lerp;
+        if (hubRef.current) {
+          hubRef.current.style.transform = `translate(${currentHubX.toFixed(2)}px, ${currentHubY.toFixed(2)}px)`;
+        }
 
-    const onMouseLeave = () => {
-      mouseX = 0;
-      mouseY = 0;
-    };
+        const targetInnerX = mouseX * 8;
+        const targetInnerY = mouseY * 8;
+        currentInnerX += (targetInnerX - currentInnerX) * lerp;
+        currentInnerY += (targetInnerY - currentInnerY) * lerp;
+        if (innerRef.current) {
+          innerRef.current.style.transform = `translate(${currentInnerX.toFixed(2)}px, ${currentInnerY.toFixed(2)}px)`;
+        }
 
-    const updateParallax = () => {
-      const lerp = 0.08;
+        const targetOuterX = mouseX * 14;
+        const targetOuterY = mouseY * 14;
+        currentOuterX += (targetOuterX - currentOuterX) * lerp;
+        currentOuterY += (targetOuterY - currentOuterY) * lerp;
+        if (outerRef.current) {
+          outerRef.current.style.transform = `translate(${currentOuterX.toFixed(2)}px, ${currentOuterY.toFixed(2)}px)`;
+        }
 
-      const targetHubX = mouseX * 4;
-      const targetHubY = mouseY * 4;
-      currentHubX += (targetHubX - currentHubX) * lerp;
-      currentHubY += (targetHubY - currentHubY) * lerp;
-      if (hubRef.current) {
-        hubRef.current.style.transform = `translate(${currentHubX.toFixed(2)}px, ${currentHubY.toFixed(2)}px)`;
-      }
+        const targetSparkleX = mouseX * 20;
+        const targetSparkleY = mouseY * 20;
+        currentSparkleX += (targetSparkleX - currentSparkleX) * lerp;
+        currentSparkleY += (targetSparkleY - currentSparkleY) * lerp;
+        if (sparklesRef.current) {
+          sparklesRef.current.style.transform = `translate(${currentSparkleX.toFixed(2)}px, ${currentSparkleY.toFixed(2)}px)`;
+        }
 
-      const targetInnerX = mouseX * 8;
-      const targetInnerY = mouseY * 8;
-      currentInnerX += (targetInnerX - currentInnerX) * lerp;
-      currentInnerY += (targetInnerY - currentInnerY) * lerp;
-      if (innerRef.current) {
-        innerRef.current.style.transform = `translate(${currentInnerX.toFixed(2)}px, ${currentInnerY.toFixed(2)}px)`;
-      }
+        const delta = Math.abs(targetHubX - currentHubX) + Math.abs(targetHubY - currentHubY);
+        if (delta > 0.01) {
+          requestAnimationFrame(updateParallax);
+        } else {
+          isTicking = false;
+        }
+      };
 
-      const targetOuterX = mouseX * 14;
-      const targetOuterY = mouseY * 14;
-      currentOuterX += (targetOuterX - currentOuterX) * lerp;
-      currentOuterY += (targetOuterY - currentOuterY) * lerp;
-      if (outerRef.current) {
-        outerRef.current.style.transform = `translate(${currentOuterX.toFixed(2)}px, ${currentOuterY.toFixed(2)}px)`;
-      }
+      onMouseMove = (e: MouseEvent) => {
+        const rect = container.getBoundingClientRect();
+        const cX = rect.left + rect.width / 2;
+        const cY = rect.top + rect.height / 2;
+        mouseX = Math.max(-1, Math.min(1, (e.clientX - cX) / (rect.width / 2)));
+        mouseY = Math.max(-1, Math.min(1, (e.clientY - cY) / (rect.height / 2)));
 
-      const targetSparkleX = mouseX * 20;
-      const targetSparkleY = mouseY * 20;
-      currentSparkleX += (targetSparkleX - currentSparkleX) * lerp;
-      currentSparkleY += (targetSparkleY - currentSparkleY) * lerp;
-      if (sparklesRef.current) {
-        sparklesRef.current.style.transform = `translate(${currentSparkleX.toFixed(2)}px, ${currentSparkleY.toFixed(2)}px)`;
-      }
+        if (!isTicking) {
+          isTicking = true;
+          requestAnimationFrame(updateParallax);
+        }
+      };
 
-      const delta = Math.abs(targetHubX - currentHubX) + Math.abs(targetHubY - currentHubY);
-      if (delta > 0.01) {
-        requestAnimationFrame(updateParallax);
-      } else {
-        isTicking = false;
-      }
-    };
+      onMouseLeave = () => {
+        mouseX = 0;
+        mouseY = 0;
+      };
 
-    container.addEventListener('mousemove', onMouseMove, { passive: true });
-    container.addEventListener('mouseleave', onMouseLeave, { passive: true });
+      container.addEventListener('mousemove', onMouseMove, { passive: true });
+      container.addEventListener('mouseleave', onMouseLeave, { passive: true });
+    }
 
     return () => {
-      container.removeEventListener('mousemove', onMouseMove);
-      container.removeEventListener('mouseleave', onMouseLeave);
+      if (observer) {
+        observer.disconnect();
+        document.removeEventListener('visibilitychange', handleVisibility);
+      }
+      if (onMouseMove) {
+        container.removeEventListener('mousemove', onMouseMove);
+      }
+      if (onMouseLeave) {
+        container.removeEventListener('mouseleave', onMouseLeave);
+      }
     };
   }, []);
 

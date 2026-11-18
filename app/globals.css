@@ -2614,13 +2614,6 @@ a:hover {
   display: grid;
   grid-template-columns: 1fr;
   gap: 14px;
-}
-
-@media (min-width: 600px) {
-  .policy-grievance-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
   margin-top: 14px;
 }
 
